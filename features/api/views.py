@@ -83,7 +83,7 @@ class CategoryDataAV(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class CategoryDataDetails(APIView):
     def get(self, request, pk):
         try:
@@ -92,9 +92,9 @@ class CategoryDataDetails(APIView):
             return Response(serializer.data)
         except Category.DoesNotExist:
             return Response({'status':'not found'},status=status.HTTP_404_NOT_FOUND)
-    
+
 class Login(APIView):
-    def get(self, request):
+    def post(self, request):
         try:
             users = User.objects.all()
             serializer = UserSerializer(users, many=True)
