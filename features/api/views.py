@@ -71,12 +71,12 @@ class UserListAV(APIView):
     def get(self, request):
         try:
             users = User.objects.all()
-            serializer = CategorySerializer(users, many=True)
+            serializer = UserSerializer(users, many=True)
             return Response(serializer.data)
         except User.DoesNotExist:
             return Response({'status':'not found'},status=status.HTTP_404_NOT_FOUND)
     def post(self, request):
-        serializer = CategorySerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
