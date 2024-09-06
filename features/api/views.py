@@ -20,6 +20,15 @@ class ParkingAV(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class TransactionUser(APIView):
+    def get(self, request, pk):
+        try:
+            transactions = Tansaction.objects.filter(user=pk)
+            serializer = TransactionSerializer(transactions, many=True)
+            return Response(serializer.data)
+        except Tansaction.DoesNotExist:
+            return Response({'status':'not found'},status=status.HTTP_404_NOT_FOUND)
 
 class TransactionAV(APIView):
     def get(self, request):
