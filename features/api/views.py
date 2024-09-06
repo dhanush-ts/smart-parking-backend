@@ -67,6 +67,20 @@ class CategoryDataAV(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class Login(APIView):
+    def get(self, request):
+        try:
+            users = User.objects.all()
+            serializer = UserSerializer(users, many=True)
+            for i in serializer.data:
+                if i['email'] == request.data['email']:
+                    if i['password'] == request.data['password']:            
+                        return Response(serializer.data)
+                    return Response({"success": False, "message":"wrong password"})
+                return Response({"success": False, "message":"user not found"})
+        except User.DoesNotExist:
+            return Response({'status':'not found'},status=status.HTTP_404_NOT_FOUND)
+    
 class UserListAV(APIView):
     def get(self, request):
         try:
