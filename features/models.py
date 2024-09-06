@@ -30,7 +30,7 @@ class CategoryData(models.Model):
     no_available = models.IntegerField()
     address = models.CharField(max_length=200)
     rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
-    image = models.ImageField()
+    image = models.URLField()
     cost_per_minute = models.IntegerField(validators=[MinValueValidator(0)])
     
     Category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_data')
