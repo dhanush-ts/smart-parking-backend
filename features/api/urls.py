@@ -1,5 +1,5 @@
 from django.urls import path
-from features.api.views import CategoryListAV, UserListAV, UserDetailAV, TransactionAV, Login
+from features.api.views import CategoryListAV, UserListAV, UserDetailAV, TransactionAV, Login, ParkingAV
 
 urlpatterns = [
     path('category/', CategoryListAV.as_view(), name='all-category-list'),
@@ -7,4 +7,5 @@ urlpatterns = [
     path('user/', UserListAV.as_view(), name='user-list'),
     path('transaction/', TransactionAV.as_view(), name='transaction'),
     path('login/', Login.as_view(), name='login'),
+    path('parking/', ParkingAV.as_view(), name='parking'),
     ]
