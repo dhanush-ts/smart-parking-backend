@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from features.api.Serializers import (CategorySerializer, UserSerializer, CategoryDataSerializer
                                       , NumberPlateSerializer, TransactionSerializer , ParkingSerializer)
 from rest_framework.response import Response
-from features.models import Category, User, NumberPlate, Tansaction, Parking
+from features.models import Category, User, NumberPlate, Tansaction, Parking, CategoryData
 from rest_framework import status
 
 class ParkingAV(APIView):
@@ -83,6 +83,15 @@ class CategoryDataAV(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CategoryDataDetails(APIView):
+    def get(self, request, pk):
+        try:
+            category_data = Category.objects.get(pk=pk)
+            serializer = CategorySerializer(category_data)
+            return Response(serializer.data)
+        except Category.DoesNotExist:
+            return Response({'status':'not found'},status=status.HTTP_404_NOT_FOUND)
     
 class Login(APIView):
     def get(self, request):
