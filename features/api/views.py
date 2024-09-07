@@ -9,40 +9,28 @@ from django.utils import timezone
 class ParkingExitAV(APIView):
     def post(self, request):
         try:
-            number_plate_value = request.data['number_plate']  # Get number_plate from the request
-            exit_time = timezone.now()  # Get current time
+            number_plate_value = request.data['number_plate']  
+            exit_time = timezone.now()  
             
-            # Find the parking record for the number plate
             parking = Parking.objects.get(number_plate__number_plate=number_plate_value)
             
-            # Ensure entry_time is timezone-aware
             if timezone.is_naive(parking.entry_time):
                 entry_time = timezone.make_aware(parking.entry_time)
             else:
                 entry_time = parking.entry_time
-            
-            # Calculate time spent
             time_spent = exit_time - entry_time
-            
-            # Get the cost per minute from the category data
             cost_per_minute = parking.category_data.cost_per_minute
-            
-            # Calculate total cost
             print(entry_time,exit_time,(time_spent.total_seconds() // 60) , cost_per_minute)
             total_cost = (time_spent.total_seconds() // 60) * cost_per_minute
-            
-            # Get the user associated with the number plate
             number_plate = NumberPlate.objects.get(number_plate=number_plate_value)
-            user = number_plate.user  # Fetch the user from NumberPlate
+            user = number_plate.user  
             
-            # Create a new transaction
             Tansaction.objects.create(
                 user=user,
                 category_data=parking.category_data,
                 cost=total_cost
             )
             
-            # Delete the parking entry
             parking.delete()
             
             return Response({"message": "Transaction completed", "total_cost": total_cost}, status=status.HTTP_200_OK)
@@ -52,7 +40,6 @@ class ParkingExitAV(APIView):
         except NumberPlate.DoesNotExist:
             return Response({"error": "Number plate not found"}, status=status.HTTP_404_NOT_FOUND)
  
-
 class ParkingAV(APIView):
     def get(self, request):
         try:
@@ -141,6 +128,17 @@ class CategoryDataDetails(APIView):
         except Category.DoesNotExist:
             return Response({'status':'not found'},status=status.HTTP_404_NOT_FOUND)
         
+    def put(self, request, pk):
+        try:
+            category_data = Category.objects.get(pk=pk)
+            serializer = CategoryDataSerializer(category_data, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Category.DoesNotExist:
+            return Response({'status':'not found'},status=status.HTTP_404_NOT_FOUND)
+        
 class TransactionUser(APIView):
     def get(self, request, pk):
         try:
@@ -160,7 +158,6 @@ class Login(APIView):
                     if i['password'] == request.data['password']:            
                         return Response(i)
                     return Response({"success": False, "message":"wrong password"})
-                print(i['email'],request.data['email'])
             return Response({"success": False, "message":"user not found"})
         except User.DoesNotExist:
             return Response({'status':'not found'},status=status.HTTP_404_NOT_FOUND)
@@ -196,4 +193,23 @@ class UserDetailAV(APIView):
         user = User.objects.get(pk=pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class UpdateAV(APIView):
+    def get(self, request, pk):
+        try:
+            category_data = CategoryData.objects.get(pk=pk)
+            serializer = CategoryDataSerializer(category_data)
+            return Response(serializer.data)
+        except CategoryData.DoesNotExist:
+            return Response({'status':'not found'},status=status.HTTP_404_NOT_FOUND)
     
+    def put(self, request, pk):
+        try:
+            category = CategoryData.objects.get(pk=pk)
+            serializer = CategoryDataSerializer(category, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except CategoryData.DoesNotExist:
+            return Response({'status':'not found'},status=status.HTTP_404_NOT_FOUND)
