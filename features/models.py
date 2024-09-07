@@ -40,7 +40,7 @@ class CategoryData(models.Model):
     
 class Tansaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category_data = models.ForeignKey(CategoryData, on_delete=models.CASCADE)
+    category_data = models.ForeignKey(CategoryData, on_delete=models.CASCADE, related_name='categoryData')
     cost = models.IntegerField(default=0)
     
     def __str__(self) -> str:

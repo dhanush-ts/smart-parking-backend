@@ -29,6 +29,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class TransactionSerializer(serializers.ModelSerializer):
+    category_data = CategoryDataSerializer(read_only=True)  
+
     class Meta:
         model = Tansaction
-        fields = '__all__'
+        fields = ['id', 'cost', 'user', 'category_data']  
