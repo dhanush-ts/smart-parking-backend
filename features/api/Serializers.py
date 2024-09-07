@@ -1,7 +1,13 @@
 from rest_framework import serializers
 from features.models import User, Category, CategoryData, NumberPlate, Tansaction, Parking
 
+class NumberPlateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NumberPlate
+        fields = '__all__'
+
 class ParkingSerializer(serializers.ModelSerializer):
+    number_plate = NumberPlateSerializer(read_only=True)
     class Meta:
         model = Parking
         fields = '__all__'
@@ -17,11 +23,6 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
         
-class NumberPlateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = NumberPlate
-        fields = '__all__'
-        
 class UserSerializer(serializers.ModelSerializer):
     numberUser = NumberPlateSerializer(many=True, read_only=True)
     class Meta:
@@ -33,4 +34,4 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tansaction
-        fields = ['id', 'cost', 'user', 'category_data']  
+        fields = ['id', 'cost', 'user', 'category_data','time']  

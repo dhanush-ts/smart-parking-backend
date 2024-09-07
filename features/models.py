@@ -40,6 +40,7 @@ class CategoryData(models.Model):
     
 class Tansaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
     category_data = models.ForeignKey(CategoryData, on_delete=models.CASCADE, related_name='categoryData')
     cost = models.IntegerField(default=0)
     
@@ -47,10 +48,9 @@ class Tansaction(models.Model):
         return f"{self.user} - {self.category_data}"
     
 class Parking(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     category_data = models.ForeignKey(CategoryData, on_delete=models.CASCADE)
     entry_time = models.DateTimeField(auto_now=True)
     number_plate = models.ForeignKey(NumberPlate, on_delete=models.CASCADE, related_name='numberPlate')
     
     def __str__(self) -> str:
-        return f"{self.user} - {self.category_data}"
+        return f"{self.category_data}"
